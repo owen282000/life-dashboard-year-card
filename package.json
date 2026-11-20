@@ -1,0 +1,11 @@
+{
+  "name": "life-dashboard-year-card",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A Home Assistant dashboard card that draws a year of any sensor as a grid with one square per day.",
+  "scripts": {
+    "test": "node --test test/data.test.mjs"
+  },
+  "license": "MIT"
+}

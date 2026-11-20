@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Year card harness</title>
+<style>
+  html { font-family: Roboto, "Helvetica Neue", Arial, sans-serif; }
+  body { margin: 0; padding: 24px; background: var(--primary-background-color); color: var(--primary-text-color); }
+  h2 { font-size: 13px; font-weight: 500; margin: 24px 0 8px; color: var(--secondary-text-color); }
+  h2:first-child { margin-top: 0; }
+  .slot { margin-bottom: 8px; }
+  .theme-light {
+    --primary-background-color: #F3F6F4; --card-background-color: #FFFFFF; --ha-card-border-color: #D5DED9;
+    --divider-color: #E1E7E3; --primary-text-color: #101A15; --secondary-text-color: #56645D; --primary-color: #1E9665;
+  }
+  .theme-dark {
+    --primary-background-color: #0A0F0D; --card-background-color: #141C18; --ha-card-border-color: #27332D;
+    --divider-color: #222C27; --primary-text-color: #EEF4F0; --secondary-text-color: #A7B5AE; --primary-color: #30B77E;
+  }
+  .theme-ha-dark {
+    --primary-background-color: #111111; --card-background-color: #1C1C1C; --ha-card-border-color: #333333;
+    --divider-color: rgba(225, 225, 225, 0.12); --primary-text-color: #E1E1E1; --secondary-text-color: #9B9B9B; --primary-color: #03A9F4;
+  }
+  #results { white-space: pre-wrap; font: 12px monospace; }
+</style>
+</head>
+<body>
+<script type="module">
+  import { makeHass as fixtureHass } from "./fixtures.mjs";
+
+  const params = new URLSearchParams(location.search);
+  // A fixed "now" keeps the screenshots the same from one day to the next.
+  const today = params.get("today") || "2026-11-20";
+  const fixed = Date.parse(`${today}T12:00:00Z`);
+  Date.now = () => fixed;
+  await import("../dist/life-dashboard-year-card.js");
+
+  class FakeHaCard extends HTMLElement {
+    constructor() {
+      super();
+      this.attachShadow({ mode: "open" }).innerHTML = `<style>
+        :host { display: block; background: var(--ha-card-background, var(--card-background-color, #fff));
+          border: var(--ha-card-border-width, 1px) solid var(--ha-card-border-color, #e0e0e0);
+          border-radius: var(--ha-card-border-radius, 18px); color: var(--primary-text-color); }
+      </style><slot></slot>`;
+    }
+  }
+  const ICONS = {
+    "mdi:chevron-left": "M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z",
+    "mdi:chevron-right": "M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z",
+    "mdi:calendar-month": "M9,10V12H7V10H9M13,10V12H11V10H13M17,10V12H15V10H17M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5A2,2 0 0,1 5,3H6V1H8V3H16V1H18V3H19M19,19V8H5V19H19M9,14V16H7V14H9M13,14V16H11V14H13M17,14V16H15V14H17Z",
+    "mdi:information-outline": "M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z",
+    "mdi:alert-circle-outline": "M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z",
+  };
+  class FakeHaIcon extends HTMLElement {
+    connectedCallback() {
+      const path = ICONS[this.getAttribute("icon")] || "";
+      this.attachShadow({ mode: "open" }).innerHTML = `<style>:host { display: inline-flex; width: var(--mdc-icon-size, 24px); height: var(--mdc-icon-size, 24px); }
+        svg { width: 100%; height: 100%; fill: currentColor; }</style><svg viewBox="0 0 24 24"><path d="${path}"/></svg>`;
+    }
+  }
+  if (!customElements.get("ha-card")) customElements.define("ha-card", FakeHaCard);
+  if (!customElements.get("ha-icon")) customElements.define("ha-icon", FakeHaIcon);
+
+  const theme = params.get("theme") || "light";
+  document.documentElement.className = `theme-${theme}`;
+  document.documentElement.dir = params.get("dir") || "ltr";
+
+  const APP = ["sensor.sams_pixel_steps_today", "sensor.sams_pixel_last_sleep_duration", "sensor.sams_pixel_screen_time_today", "sensor.sams_pixel_exercise_today"];
+  const SCENES = {
+    app: { hass: { app: true }, config: { metrics: APP.map((entity) => ({ entity })) } },
+    rows: { hass: { app: true }, config: { layout: "rows", metrics: APP.map((entity) => ({ entity })) } },
+    plain: { hass: { app: false }, config: { title: "Steps", entity: "sensor.sams_pixel_daily_steps" } },
+    weight: { hass: { app: true }, config: { title: "Weight", metrics: [{ entity: "sensor.scale_weight", name: "Weight", color: "#df566f" }] } },
+    missing: { hass: { app: true }, config: { entity: "sensor.no_statistics" } },
+    pick: { hass: { app: true }, config: {} },
+  };
+
+  function makeHass(options = {}) {
+    return fixtureHass({ today, language: params.get("lang") || "en-GB", firstWeekday: params.get("week") || "language", ...options });
+  }
+
+  function mount(sceneId, width, extra = {}) {
+    const scene = SCENES[sceneId];
+    const card = document.createElement("life-dashboard-year-card");
+    card.setConfig({ ...scene.config, ...extra });
+    const slot = document.createElement("div");
+    slot.className = "slot";
+    slot.style.width = `${width}px`;
+    slot.append(card);
+    card.hass = makeHass(scene.hass);
+    return slot;
+  }
+
+  async function runChecks() {
+    const out = [];
+    const check = (name, ok, detail = "") => out.push({ name, ok: Boolean(ok), detail: String(detail) });
+    const frame = (ms = 80) => new Promise((r) => setTimeout(r, ms));
+    const place = (sceneId, width, extra) => { const slot = mount(sceneId, width, extra); document.body.append(slot); return slot.firstChild; };
+
+    // The four metrics of the app, one at a time, on a wide dashboard.
+    const card = place("app", 1000);
+    await frame();
+    const sr = card.shadowRoot;
+    const q = (s) => sr.querySelector(s);
+    const all = (s) => [...sr.querySelectorAll(s)];
+    check("a calendar year draws 365 squares", all("rect.c").length === 365, all("rect.c").length);
+    check("days after today are drawn empty and cannot be pointed at", all("rect.c:not([data-i])").length === 41 && all("rect.c:not([data-i])").every((r) => r.classList.contains("none")), all("rect.c:not([data-i])").length);
+    check("today is marked", all("rect.c.today").length === 1);
+    check("four tabs, the first chosen", all(".tab").length === 4 && all(".tab")[0].getAttribute("aria-pressed") === "true", all(".tab").map((t) => t.textContent).join());
+    check("the app's metrics get their own names", all(".tab").map((t) => t.textContent).join() === "Steps,Sleep,Screen time,Workouts", all(".tab").map((t) => t.textContent).join());
+    check("three figures above the grid", all(".stats dd").length === 3 && /steps/.test(all(".stats dd")[0].textContent) && /10,000/.test(all(".stats dt")[1].textContent), all(".stats div").map((d) => d.textContent).join(" | "));
+    check("the range is named", q(".head .s").textContent === "2026", q(".head .s").textContent);
+    check("the legend names the lowest and highest threshold", /^< 4k10k\+$/i.test(q(".legend").textContent) && all(".legend i").length === 4, q(".legend").textContent);
+    check("twelve month labels and three weekday labels", all(".plot text").length === 15, all(".plot text").map((t) => t.textContent).join());
+    check("no horizontal scroll on a wide card", q(".wrap").scrollWidth <= q(".wrap").clientWidth + 1 && q(".root").scrollWidth <= q(".root").clientWidth + 1, `${q(".wrap").scrollWidth}/${q(".wrap").clientWidth}`);
+    check("screen readers get the months as a table", all("table tbody tr").length === 11 && /Steps per month, 2026/.test(q("caption").textContent), all("table tbody tr").length);
+    check("the plot is one tab stop with a label", all("[tabindex]").length === 1 && /Steps per day, 2026/.test(q(".plot").getAttribute("aria-label")), q(".plot").getAttribute("aria-label"));
+    const levels = new Set(all("rect.c[data-i]").map((r) => r.style.getPropertyValue("--_p")));
+    check("the squares use all four steps of the scale", ["32%", "55%", "77%", "100%"].every((p) => levels.has(p)), [...levels].join());
+
+    const before = card._renders;
+    card.hass = makeHass({ app: true });
+    card.hass = makeHass({ app: true });
+    check("no re-render when nothing the card shows changed", card._renders === before, `${before}->${card._renders}`);
+
+    // Pointer and keyboard readout.
+    const target = all("rect.c[data-i]")[200];
+    const box = target.getBoundingClientRect();
+    target.dispatchEvent(new PointerEvent("pointermove", { clientX: box.left + 2, clientY: box.top + 2, pointerType: "mouse", bubbles: true }));
+    const tip = q(".tip");
+    check("hover shows the day and its value", tip.classList.contains("on") && /20 Jul 2026/.test(tip.textContent) && /steps/.test(tip.textContent), tip.textContent);
+    check("the tooltip stays inside the card", tip.offsetLeft >= 0 && tip.offsetLeft + tip.offsetWidth <= q(".root").clientWidth, `${tip.offsetLeft}+${tip.offsetWidth}`);
+    check("the tooltip sits above its square", tip.getBoundingClientRect().bottom <= box.top, `${tip.getBoundingClientRect().bottom} ${box.top}`);
+    q(".plot").dispatchEvent(new PointerEvent("pointerleave", { pointerType: "mouse" }));
+    check("the tooltip hides on leave", !tip.classList.contains("on"));
+    q(".plot").focus();
+    check("focus starts on today", /20 Nov 2026/.test(q(".plot").getAttribute("aria-valuetext")), q(".plot").getAttribute("aria-valuetext"));
+    q(".plot").dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true }));
+    check("arrow left goes a week back", /13 Nov 2026/.test(q(".plot").getAttribute("aria-valuetext")), q(".plot").getAttribute("aria-valuetext"));
+    q(".plot").dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowUp", bubbles: true }));
+    check("arrow up goes a day back", /12 Nov 2026/.test(q(".plot").getAttribute("aria-valuetext")), q(".plot").getAttribute("aria-valuetext"));
+    q(".plot").dispatchEvent(new KeyboardEvent("keydown", { key: "Home", bubbles: true }));
+    check("Home goes to the first day", /1 Jan 2026/.test(q(".plot").getAttribute("aria-valuetext")) && q(".plot").getAttribute("aria-valuenow") === "1", q(".plot").getAttribute("aria-valuetext"));
+    check("the cursor is visible on the chosen day", q("rect.cursor").getAttribute("visibility") === "visible");
+    q(".plot").dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    check("Escape hides the readout", !q(".tip").classList.contains("on") && q("rect.cursor").getAttribute("visibility") === "hidden");
+    q(".plot").blur();
+
+    // Tabs.
+    all(".tab")[2].click();
+    await frame();
+    check("the third tab shows screen time", all(".tab")[2].getAttribute("aria-pressed") === "true" && /h/.test(all(".stats dd")[0].textContent), all(".stats dd")[0].textContent);
+    check("the tab keeps the focus after the redraw", sr.activeElement === all(".tab")[2]);
+    check("screen time says where its statistics start", /Statistics start on 18 September 2026/.test(q(".note")?.textContent || ""), q(".note")?.textContent);
+    all(".tab")[3].click();
+    await frame();
+    check("a day without a workout is zero, not unknown", all("rect.c.zero").length > 100 && all("rect.c.none[data-i]").length <= 6, `${all("rect.c.zero").length} zero, ${all("rect.c.none[data-i]").length} unknown`);
+    all(".tab")[0].click();
+    await frame();
+
+    // Paging.
+    check("next is disabled on the current year", q(".nav .next").disabled && !q(".nav .previous").disabled);
+    q(".nav .previous").click();
+    await frame();
+    check("previous shows the year before", q(".head .s").textContent === "2025" && all("rect.c").length === 365 && all("rect.c[data-i]").length === 365, q(".head .s").textContent);
+    check("the earlier year has its own figures", /steps/.test(all(".stats dd")[0].textContent) && all("rect.c.none").length === 0, all(".stats dd")[0].textContent);
+    check("the button keeps the focus after paging", sr.activeElement === q(".nav .previous"));
+    q(".nav .previous").click();
+    await frame();
+    q(".nav .previous").click();
+    await frame();
+    check("paging stops at the first year without data", q(".head .s").textContent === "2023" && q(".nav .previous").disabled && /No statistics in this period/.test(q(".note").textContent), `${q(".head .s").textContent} ${q(".note")?.textContent}`);
+    q(".nav .next").click();
+    await frame();
+    check("next goes forward again", q(".head .s").textContent === "2024", q(".head .s").textContent);
+
+    // The last twelve months.
+    const rolling = place("app", 1000, { period: "rolling" });
+    await frame();
+    const rq = (s) => rolling.shadowRoot.querySelector(s);
+    check("the last twelve months end today", rq(".head .s").textContent === "Nov 2025 to Nov 2026" && rolling.shadowRoot.querySelectorAll("rect.c").length === 365 && rolling.shadowRoot.querySelectorAll("rect.c:not([data-i])").length === 0, rq(".head .s").textContent);
+
+    // All metrics below each other.
+    const rows = place("rows", 1000);
+    await frame();
+    check("the rows layout draws a grid per metric", rows.shadowRoot.querySelectorAll(".plot").length === 4 && rows.shadowRoot.querySelectorAll(".tab").length === 0 && rows.shadowRoot.querySelectorAll(".mhead").length === 4, rows.shadowRoot.querySelectorAll(".plot").length);
+    check("each row has its own color", new Set([...rows.shadowRoot.querySelectorAll(".metric")].map((m) => m.style.getPropertyValue("--_c"))).size === 4);
+
+    // Phone width: the squares keep their size and the grid scrolls to today.
+    const phone = place("app", 360);
+    await frame();
+    const wrap = phone.shadowRoot.querySelector(".wrap");
+    check("at phone width the grid scrolls inside the card", wrap.scrollWidth > wrap.clientWidth && phone.shadowRoot.querySelector(".root").scrollWidth <= phone.shadowRoot.querySelector(".root").clientWidth + 1, `${wrap.scrollWidth}/${wrap.clientWidth}`);
+    const todayBox = phone.shadowRoot.querySelector("rect.today").getBoundingClientRect();
+    const wrapBox = wrap.getBoundingClientRect();
+    check("and starts at today", todayBox.left >= wrapBox.left && todayBox.right <= wrapBox.right, `${todayBox.left} in ${wrapBox.left}..${wrapBox.right}`);
+    check("squares stay at least 9 px at phone width", Number(phone.shadowRoot.querySelector("rect.c").getAttribute("width")) >= 9, phone.shadowRoot.querySelector("rect.c").getAttribute("width"));
+    const section = place("app", 500);
+    await frame();
+    check("a 500 px section fits the year without scrolling", section.shadowRoot.querySelector(".wrap").scrollWidth <= section.shadowRoot.querySelector(".wrap").clientWidth + 1, `${section.shadowRoot.querySelector(".wrap").scrollWidth}/${section.shadowRoot.querySelector(".wrap").clientWidth}`);
+
+    // Without the app: one plain sensor, from the day it was added.
+    const plain = place("plain", 700, { period: "rolling" });
+    await frame();
+    const pq = (s) => plain.shadowRoot.querySelector(s);
+    check("a plain sensor has no tabs and its own name", plain.shadowRoot.querySelectorAll(".tab").length === 0 && /Daily steps/.test(pq(".plot").getAttribute("aria-label")), pq(".plot").getAttribute("aria-label"));
+    check("it fills from the day it was added", plain.shadowRoot.querySelectorAll("rect.c.none").length === 320 && /Statistics start on 7 October 2026/.test(pq(".note").textContent), `${plain.shadowRoot.querySelectorAll("rect.c.none").length} ${pq(".note")?.textContent}`);
+    check("a step sensor gets the step thresholds", /^< 4k10k\+$/i.test(pq(".legend").textContent), pq(".legend").textContent);
+
+    // A measurement: thresholds from its own data.
+    const weight = place("weight", 700);
+    await frame();
+    check("a measurement gets a scale from its own values", /kg/.test(weight.shadowRoot.querySelector(".stats dd").textContent) && /^< 7\d(\.\d)?7\d(\.\d)?\+$/.test(weight.shadowRoot.querySelector(".legend").textContent), weight.shadowRoot.querySelector(".legend").textContent);
+    check("without thresholds of its own it counts the days with data", /with data/.test(weight.shadowRoot.querySelectorAll(".stats dt")[1].textContent) && /300 days/.test(weight.shadowRoot.querySelectorAll(".stats dd")[1].textContent), weight.shadowRoot.querySelectorAll(".stats div")[1].textContent);
+
+    // Empty states.
+    const missing = place("missing", 500);
+    await frame();
+    check("a sensor without statistics says so", /sensor\.no_statistics has no long-term statistics/.test(missing.shadowRoot.querySelector(".note")?.textContent || ""), missing.shadowRoot.querySelector(".note")?.textContent);
+    const pick = place("pick", 500);
+    check("no metrics asks for a sensor", pick.shadowRoot.querySelector(".empty-figure")?.textContent === "Choose a sensor");
+    const broken = document.createElement("life-dashboard-year-card");
+    broken.setConfig({ entity: "sensor.sams_pixel_daily_steps" });
+    document.body.append(broken);
+    broken.hass = { ...makeHass(), callWS: async (message) => { if (message.type.startsWith("recorder/statistics")) throw new Error("no recorder"); return [{ statistic_id: "sensor.sams_pixel_daily_steps" }]; } };
+    await frame();
+    check("a failed request shows a message, not a broken card", /could not read the statistics/.test(broken.shadowRoot.querySelector(".note")?.textContent || ""), broken.shadowRoot.querySelector(".note")?.textContent);
+
+    // Names and titles must never become markup.
+    window.__pwned = undefined;
+    const hostile = place("plain", 500, { title: '<img src=x onerror="window.__pwned=1">', metrics: [{ entity: "sensor.sams_pixel_daily_steps", name: "<b onmouseover=alert(1)>x</b>", color: "red;background:url(x)" }] });
+    await frame();
+    check("hostile values create no elements", hostile.shadowRoot.querySelectorAll("img, b[onmouseover]").length === 0 && window.__pwned === undefined);
+    check("a hostile title renders as text", hostile.shadowRoot.querySelector(".head .t").textContent.includes("<img"));
+    check("a color that is more than a color is ignored", !/url/.test(hostile.shadowRoot.querySelector(".metric").getAttribute("style")), hostile.shadowRoot.querySelector(".metric").getAttribute("style"));
+
+    // Dutch, week starting on Monday; American English on Sunday.
+    const dutch = document.createElement("life-dashboard-year-card");
+    dutch.setConfig(SCENES.app.config);
+    document.body.append(dutch);
+    dutch.hass = makeHass({ language: "nl" });
+    await frame();
+    const dutchText = [...dutch.shadowRoot.querySelectorAll(".plot text")].map((t) => t.textContent);
+    check("labels follow the language", dutch.shadowRoot.querySelector(".tab").textContent === "Stappen" && dutchText.includes("mrt") && dutchText.slice(0, 3).join() === "ma,wo,vr", dutchText.join());
+    const american = document.createElement("life-dashboard-year-card");
+    american.setConfig(SCENES.app.config);
+    document.body.append(american);
+    american.hass = makeHass({ language: "en-US" });
+    await frame();
+    check("the week starts where the locale says", [...american.shadowRoot.querySelectorAll(".plot text")].slice(0, 3).map((t) => t.textContent).join() === "Sun,Tue,Thu", [...american.shadowRoot.querySelectorAll(".plot text")].slice(0, 3).map((t) => t.textContent).join());
+    document.documentElement.dir = "rtl";
+    const rtl = place("app", 700);
+    await frame();
+    check("in a right-to-left page time still runs left to right", getComputedStyle(rtl.shadowRoot.querySelector(".plot")).direction === "ltr" && rtl.shadowRoot.querySelector(".root").scrollWidth <= rtl.shadowRoot.querySelector(".root").clientWidth + 1);
+    document.documentElement.dir = "ltr";
+
+    // Picker support and editor.
+    const Card = customElements.get("life-dashboard-year-card");
+    check("getStubConfig starts with the app's four sensors", Card.getStubConfig(makeHass()).metrics.length === 4);
+    check("getStubConfig without the app picks a step sensor", Card.getStubConfig(makeHass({ app: false })).metrics[0]?.entity === "sensor.sams_pixel_daily_steps");
+    check("registered in window.customCards", window.customCards.some((c) => c.type === "life-dashboard-year-card" && c.preview));
+    check("grid options are full width and auto height", card.getGridOptions().rows === "auto" && card.getGridOptions().columns === "full");
+    let threw = false;
+    try { document.createElement("life-dashboard-year-card").setConfig({ metrics: "sensor.x" }); } catch { threw = true; }
+    check("setConfig rejects metrics that are not a list", threw);
+
+    let changed = null;
+    class FakeHaForm extends HTMLElement {}
+    customElements.define("ha-form", FakeHaForm);
+    const editor = Card.getConfigElement();
+    document.body.append(editor);
+    editor.setConfig({ type: "custom:life-dashboard-year-card", entity: "sensor.sams_pixel_daily_steps" });
+    editor.hass = makeHass();
+    editor.addEventListener("config-changed", (e) => { changed = e.detail.config; });
+    const form = editor.shadowRoot.querySelector("ha-form");
+    check("the editor renders ha-form with its four fields", form && form.schema.map((s) => s.name).join() === "title,metrics,period,layout", form?.schema?.map((s) => s.name));
+    check("the editor turns the shorthand into a metric", form.data.metrics.length === 1 && form.data.metrics[0].entity === "sensor.sams_pixel_daily_steps" && form.data.period === "calendar");
+    check("every field has a label", form.schema.every((s) => form.computeLabel(s) !== s.name) && Object.values(form.schema[1].selector.object.fields).every((f) => f.label));
+    form.dispatchEvent(new CustomEvent("value-changed", { detail: { value: { title: "My year", period: "rolling", layout: "tabs", metrics: [{ entity: "sensor.sams_pixel_daily_steps", thresholds: "5000, 10000", color: [48, 183, 126] }] } } }));
+    check("the editor emits the YAML a person would write", JSON.stringify(changed) === JSON.stringify({ type: "custom:life-dashboard-year-card", title: "My year", period: "rolling", metrics: [{ entity: "sensor.sams_pixel_daily_steps", thresholds: [5000, 10000], color: "#30b77e" }] }), JSON.stringify(changed));
+
+    const fails = out.filter((r) => !r.ok);
+    const pre = document.createElement("pre");
+    pre.id = "results";
+    pre.textContent = `CHECKS ${out.length - fails.length}/${out.length}\n` + out.map((r) => `${r.ok ? "PASS" : "FAIL"}  ${r.name}  [${r.detail}]`).join("\n");
+    document.body.replaceChildren(pre);
+  }
+
+  if (params.has("check")) {
+    runChecks();
+  } else if (params.has("one")) {
+    const extra = {};
+    if (params.get("period")) extra.period = params.get("period");
+    if (params.get("layout")) extra.layout = params.get("layout");
+    if (params.get("title")) extra.title = params.get("title");
+    const slot = mount(params.get("one"), Number(params.get("width") || 900), extra);
+    document.body.append(slot);
+    const card = slot.firstChild;
+    setTimeout(() => {
+      const tab = Number(params.get("tab") || 0);
+      if (tab) card.shadowRoot.querySelectorAll(".tab")[tab]?.click();
+      setTimeout(() => {
+        if (params.get("hover") === null) return;
+        const rect = card.shadowRoot.querySelectorAll("rect.c[data-i]")[Number(params.get("hover"))];
+        const box = rect?.getBoundingClientRect();
+        if (rect) rect.dispatchEvent(new PointerEvent("pointermove", { clientX: box.left + 2, clientY: box.top + 2, pointerType: "mouse", bubbles: true }));
+      }, 150);
+    }, 150);
+  } else {
+    const titles = { app: "With the Life Dashboard app", rows: "All metrics below each other", plain: "A plain step sensor, added 45 days ago", weight: "A measurement, with a scale from its own values", missing: "A sensor without statistics", pick: "No sensor chosen" };
+    for (const scene of Object.keys(SCENES)) {
+      const heading = document.createElement("h2");
+      heading.textContent = titles[scene];
+      document.body.append(heading, mount(scene, Number(params.get("wide") || 1000), scene === "plain" ? { period: "rolling" } : {}), mount(scene, 360, scene === "plain" ? { period: "rolling" } : {}));
+    }
+  }
+</script>
+</body>
+</html>
