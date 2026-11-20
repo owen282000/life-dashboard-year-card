@@ -62,7 +62,7 @@ test("every language has every text, with its placeholders", () => {
 
 test("no text of the card holds a long dash", () => {
   const source = readFileSync(new URL("../dist/life-dashboard-year-card.js", import.meta.url), "utf8");
-  assert.equal(/[–—]/.test(source), false);
+  assert.equal(/[\u2013\u2014]/.test(source), false);
 });
 
 test("day keys follow the time zone, and day arithmetic ignores daylight saving", () => {
