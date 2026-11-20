@@ -166,13 +166,26 @@ The colors of the four kinds the card recognizes are CSS variables, so a theme c
 
 This card sits on top of Life Dashboard's projects, and you only install the parts you need. More at [owen282000.com/life-dashboard](https://owen282000.com/life-dashboard/).
 
-- [Android app](https://github.com/owen282000/life-dashboard-companion-app): Health Connect and screen time
-- [iPhone app](https://github.com/owen282000/life-dashboard-companion-app-ios): Apple Health
-- [Home Assistant integration](https://github.com/owen282000/life-dashboard-ha): sensors and history
-- [Grafana stack](https://github.com/owen282000/life-dashboard-stack): Postgres and Grafana dashboards
-- [Sleep card](https://github.com/owen282000/life-dashboard-sleep-card): one night, stage by stage
-- [Screen time cards](https://github.com/owen282000/life-dashboard-screen-time-card): today, the week and the family
-- **Year card**: a year of any sensor, one square per day (this repository)
+<p align="center">
+  <sub><b>On your phone</b></sub><br>
+  <a href="https://github.com/owen282000/life-dashboard-companion-app"><picture><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/family/android-light.png"><img src="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/family/android-dark.png" alt="Android app: Health Connect and screen time" width="156"></picture></a>
+  <a href="https://github.com/owen282000/life-dashboard-companion-app-ios"><picture><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/family/ios-light.png"><img src="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/family/ios-dark.png" alt="iPhone app: Apple Health" width="156"></picture></a>
+</p>
+
+<p align="center">
+  <sub><b>Where the data goes</b></sub><br>
+  <a href="https://github.com/owen282000/life-dashboard-ha"><picture><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/family/ha-light.png"><img src="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/family/ha-dark.png" alt="Home Assistant integration: sensors and all your history" width="156"></picture></a>
+  <a href="https://github.com/owen282000/life-dashboard-stack"><picture><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/family/stack-light.png"><img src="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/family/stack-dark.png" alt="Grafana stack: Postgres and Grafana dashboards" width="156"></picture></a>
+</p>
+
+<p align="center">
+  <sub><b>Cards for your Home Assistant dashboard</b></sub><br>
+  <a href="https://github.com/owen282000/life-dashboard-sleep-card"><picture><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/family/sleep-card-light.png"><img src="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/family/sleep-card-dark.png" alt="Sleep card: one night, stage by stage" width="156"></picture></a>
+  <a href="https://github.com/owen282000/life-dashboard-screen-time-card"><picture><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/family/screen-time-card-light.png"><img src="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/family/screen-time-card-dark.png" alt="Screen time cards: today, the week and the family" width="156"></picture></a>
+  <picture><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/family/year-card-here-light.png"><img src="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/family/year-card-here-dark.png" alt="Year card: a year of any sensor, one square a day (this repository)" width="156"></picture>
+  <a href="https://github.com/owen282000/life-dashboard-activity-card"><picture><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/family/activity-card-light.png"><img src="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/family/activity-card-dark.png" alt="Activity card: daily goals, the week and your streak" width="156"></picture></a>
+  <a href="https://github.com/owen282000/life-dashboard-before-bed-card"><picture><source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/family/before-bed-card-light.png"><img src="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/family/before-bed-card-dark.png" alt="Before bed card: your phone in the last hour before sleep" width="156"></picture></a>
+</p>
 
 ## Privacy
 
