@@ -10,6 +10,7 @@
 </p>
 
 <p align="center">
+  <a href="https://my.home-assistant.io/redirect/hacs_repository/?owner=owen282000&repository=life-dashboard-year-card&category=plugin"><img src="https://img.shields.io/badge/HACS-custom%20repository-41BDF5" alt="HACS: custom repository"></a>
   <a href="https://github.com/owen282000/life-dashboard-year-card/releases/latest"><img src="https://img.shields.io/github/v/release/owen282000/life-dashboard-year-card?label=Release&color=30b77e" alt="Latest release"></a>
   <a href="https://www.home-assistant.io/"><img src="https://img.shields.io/badge/Home%20Assistant-2026.3%2B-41BDF5" alt="Home Assistant 2026.3 or newer"></a>
   <a href="https://github.com/owen282000/life-dashboard-year-card/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue" alt="MIT license"></a>
@@ -25,21 +26,27 @@
   <a href="https://owen282000.com/life-dashboard/">Website</a>
 </p>
 
+<!-- life-dashboard:nav -->
 <p align="center">
-  <sub>Life Dashboard: <a href="https://github.com/owen282000/life-dashboard-companion-app">Android app</a> &nbsp;·&nbsp; <a href="https://github.com/owen282000/life-dashboard-companion-app-ios">iPhone app</a> &nbsp;·&nbsp; <a href="https://github.com/owen282000/life-dashboard-ha">Home Assistant integration</a> &nbsp;·&nbsp; <a href="https://github.com/owen282000/life-dashboard-stack">Grafana stack</a> &nbsp;·&nbsp; <a href="https://github.com/owen282000/life-dashboard-sleep-card">Sleep card</a> &nbsp;·&nbsp; <a href="https://github.com/owen282000/life-dashboard-screen-time-card">Screen time cards</a> &nbsp;·&nbsp; <b>Year card</b></sub>
+  <sub>Life Dashboard: <a href="https://github.com/owen282000/life-dashboard-companion-app">Android app</a> &nbsp;·&nbsp; <a href="https://github.com/owen282000/life-dashboard-companion-app-ios">iPhone app</a> &nbsp;·&nbsp; <a href="https://github.com/owen282000/life-dashboard-ha">Home Assistant integration</a> &nbsp;·&nbsp; <a href="https://github.com/owen282000/life-dashboard-stack">Grafana stack</a> &nbsp;·&nbsp; <a href="https://github.com/owen282000/life-dashboard-sleep-card">Sleep card</a> &nbsp;·&nbsp; <a href="https://github.com/owen282000/life-dashboard-screen-time-card">Screen time cards</a> &nbsp;·&nbsp; <b>Year card</b> &nbsp;·&nbsp; <a href="https://github.com/owen282000/life-dashboard-activity-card">Activity card</a> &nbsp;·&nbsp; <a href="https://github.com/owen282000/life-dashboard-before-bed-card">Before bed card</a></sub>
 </p>
+<!-- /life-dashboard:nav -->
 
 <p align="center">
   <picture>
     <source media="(max-width: 600px)" srcset="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/readme-hero-phone.png">
-    <img src="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/readme-hero.png" alt="The card on a dark theme with four grids below each other, each a year of squares from November 2025 to November 2026: steps in green with 10,856 steps a day on average, sleep in violet with 7h 50m, screen time in amber that only starts on 17 September 2026 and says so, and workouts in blue with 34m a day" width="900">
+    <img src="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/readme-hero.png" alt="The Year card: a grid with one square per day from November 2025 to November 2026, darker for more, with the daily average above it" width="900">
   </picture>
-  <br><sub>Sample data from made-up phones</sub>
+  <br><sub>Sample data from made-up phones. A wide screen shows steps, sleep, screen time and workouts below each other, a phone shows the Sleep tab.</sub>
 </p>
 
-The card reads Home Assistant's long-term statistics and draws a year of them: a column per week, a square per day, darker for more. It works with any sensor that has statistics, from Fitbit, Garmin, Withings or the Companion app, and starts on the day that sensor was added. With the [Life Dashboard app](https://github.com/owen282000/life-dashboard-companion-app) the year is already there, because the app sends your history along.
+The card reads Home Assistant's long-term statistics and draws a year of them: a column per week, a square per day, darker for more.
+
+With the [Life Dashboard app](https://github.com/owen282000/life-dashboard-companion-app) the year is already there: the app sends the steps, sleep and workouts that Health Connect or Apple Health already holds, each day on its own date, so the grid is full on day one instead of starting empty today.
 
 <a href="https://play.google.com/store/apps/details?id=com.owen282000.lifedashboard&referrer=utm_source%3Dgh-yearcard-readme%26utm_medium%3Dreadme"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="60" align="middle"></a> <a href="https://apps.apple.com/app/apple-store/id6824075761?pt=128699800&ct=gh-yearcard-readme&mt=8"><img src="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/badges/app-store.png" alt="Download on the App Store" height="40" align="middle"></a>
+
+The card also works without Life Dashboard, with [any sensor](https://github.com/owen282000/life-dashboard-year-card#works-with-any-sensor) that has long-term statistics, such as one from Fitbit, Garmin, Withings or Home Assistant's Companion app. Such a sensor starts on the day it was added.
 
 ## What you get
 
@@ -52,11 +59,17 @@ The card reads Home Assistant's long-term statistics and draws a year of them: a
 - **Your locale and theme.** English, Arabic, Chinese, Dutch, French, German, Hindi, Italian, Japanese, Portuguese and Spanish, the week starting where your profile says, and your theme's colors in light and dark.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/screenshot-light.png" alt="The card on a light theme with the steps of the last twelve months: 10,856 steps a day on average, 178 days at 10,000 or more, the best day 25,959 steps on 29 August, and a tooltip on that day's square" width="900">
-  <br><sub>Sample data</sub>
+  <img src="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/screenshot-light.png" alt="The Year card with the steps of the last twelve months: the daily average, the days at 10,000 or more, the best day, and a tooltip on one square" width="900">
+  <br><sub>Sample data: 10,856 steps a day on average, 178 days at 10,000 or more, and the best day at 25,959 steps on 29 August.</sub>
 </p>
 
 ## Install
+
+What you need:
+
+- Home Assistant 2026.3 or newer.
+- A sensor with long-term statistics, which means it has a state class. The sensors of the [Life Dashboard integration](https://github.com/owen282000/life-dashboard-ha) count too: the card reads the history the integration keeps for them.
+- For a year that is already filled in: the Life Dashboard app on your phone, and a watch or fitness app that writes to Health Connect or Apple Health.
 
 ### Through the Home Assistant Marketplace
 
@@ -77,13 +90,19 @@ lovelace:
 
 Copy `dist/life-dashboard-year-card.js` into the `www` folder of your Home Assistant configuration and add it as a resource of the type JavaScript module with the URL `/local/life-dashboard-year-card.js`.
 
+### Is it working?
+
+After downloading, refresh your browser. Until you do, the dashboard shows "Custom element doesn't exist: life-dashboard-year-card".
+
+You should now see a grid with a square for every day the sensor has statistics. A few squares or none is normal for a new sensor: Home Assistant writes statistics once an hour, starting on the day the sensor was added. A sensor without a state class never gets them, and the card says so. With Life Dashboard, tap **Send history** in the app to fill in the days before.
+
 ## Configure
 
 Add the card from the card picker, which has a visual editor, or in YAML. One sensor is enough:
 
 ```yaml
 type: custom:life-dashboard-year-card
-entity: sensor.your_phone_daily_steps
+entity: sensor.your_phone_steps_today
 ```
 
 Several metrics, each with its own name, color and thresholds:
@@ -132,10 +151,10 @@ Thresholds are in the unit the statistic is kept in: hours for a sleep sensor in
 
 ## Works with any sensor
 
-The card needs no integration of mine. Any sensor that Home Assistant keeps long-term statistics for will do, which means it has a state class: the Companion app's daily steps, a Fitbit, Garmin or Withings sensor, a `history_stats` sensor for screen time, an energy meter, a rain gauge.
+The card needs no integration of mine. Any sensor that Home Assistant keeps long-term statistics for will do, which means it has a state class: the daily steps of Home Assistant's Companion app, a Fitbit, Garmin or Withings sensor, a `history_stats` sensor for screen time, an energy meter, a rain gauge.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/screenshot-plain-sensor.png" alt="The card with one plain step sensor: the squares of the last six weeks are filled, the rest of the year is blank, and a note says the statistics start on 7 October 2026" width="700">
+  <img src="https://raw.githubusercontent.com/owen282000/life-dashboard-year-card/main/docs/screenshot-plain-sensor.png" alt="The Year card with one plain step sensor: the last six weeks are filled, the rest of the year is blank, and a note gives the date the statistics start" width="700">
   <br><sub>Sample data: a step sensor that was added six weeks ago</sub>
 </p>
 
@@ -145,11 +164,13 @@ Statistics start on the day a sensor is added to Home Assistant, so the grid sta
 
 The [Life Dashboard app](https://github.com/owen282000/life-dashboard-companion-app) for Android and [for iPhone](https://github.com/owen282000/life-dashboard-companion-app-ios) sends what Health Connect or Apple Health holds to the [Life Dashboard integration](https://github.com/owen282000/life-dashboard-ha), which writes every day into long-term statistics on its own date. Pick one of its sensors and the card reads that history instead of the sensor's own:
 
-- **Steps, sleep and workouts go back in time.** After **Send history** in the app the grid shows the days you already had, up to a year back, instead of starting today.
+- **Steps, sleep and workouts go back in time.** After **Send history** in the app the grid shows the days you already had, as far back as you choose to send, instead of starting today.
 - **Screen time starts when you install.** It is Android only, and a phone only hands over about the last week, so that grid fills in from the first sync on. An iPhone has no screen time for apps to read.
 - **Nothing to set up.** The card picker starts with the phone's steps, sleep, screen time and exercise, each with its name, color and thresholds.
 
-<a href="https://play.google.com/store/apps/details?id=com.owen282000.lifedashboard&referrer=utm_source%3Dgh-yearcard-readme%26utm_medium%3Dreadme">Life Dashboard on Google Play</a> &nbsp;·&nbsp; <a href="https://apps.apple.com/app/apple-store/id6824075761?pt=128699800&ct=gh-yearcard-readme&mt=8">Life Dashboard on the App Store</a> &nbsp;·&nbsp; free to build yourself from [GitHub](https://github.com/owen282000/life-dashboard-companion-app), and on F-Droid for Android
+The app is listed on Google Play and the App Store as Health Data for Home Assistant: <a href="https://play.google.com/store/apps/details?id=com.owen282000.lifedashboard&referrer=utm_source%3Dgh-yearcard-readme%26utm_medium%3Dreadme">€4.99 (US$4.99) once on Google Play</a> and <a href="https://apps.apple.com/app/apple-store/id6824075761?pt=128699800&ct=gh-yearcard-readme&mt=8">€6.99 (US$5.99) once on the App Store</a>. The APK on [GitHub](https://github.com/owen282000/life-dashboard-companion-app) and F-Droid is free, and the [iPhone app](https://github.com/owen282000/life-dashboard-companion-app-ios) is free to build yourself.
+
+To set it up, install the [Life Dashboard integration](https://github.com/owen282000/life-dashboard-ha) and add it in Home Assistant, scan its pairing code with the app, grant access to your health data, and tap **Sync Now** and then **Send history**. Its README has the steps.
 
 ## Colors
 
@@ -202,6 +223,12 @@ This card sits on top of Life Dashboard's other parts, and you only install the 
 
 The card only reads what Home Assistant already gives your browser: the recorder's statistics and the sensors' names. It makes no requests of its own, has no telemetry or analytics, and there's no server of mine in the path.
 
+<!-- life-dashboard:built -->
+## How this is built
+
+Life Dashboard is a one-person project, and [Claude Code](https://claude.com/claude-code) writes a large part of the code. I decide what gets built, read every change before it is merged, and test it on my own phones and Home Assistant before a release. Automated checks run on every pull request, and the [AI policy](https://github.com/owen282000/life-dashboard-companion-app/blob/main/AI_POLICY.md) explains what the AI does and what I check.
+<!-- /life-dashboard:built -->
+
 ## Documentation
 
 - [Changelog](https://github.com/owen282000/life-dashboard-year-card/blob/main/CHANGELOG.md)
@@ -219,8 +246,10 @@ Stars, shares and good bug reports all help. If you want to chip in for the even
 
 MIT licensed. See [LICENSE](https://github.com/owen282000/life-dashboard-year-card/blob/main/LICENSE).
 
+<!-- life-dashboard:footer -->
 <p align="center">
   <sub>Made by <a href="https://github.com/owen282000">Owen Vogelaar</a> for the self-hosting and quantified self crowd.</sub><br>
   <sub>Google Play and the Google Play logo are trademarks of Google LLC.</sub><br>
   <sub>Apple, the Apple logo and App Store are trademarks of Apple Inc.</sub>
 </p>
+<!-- /life-dashboard:footer -->
