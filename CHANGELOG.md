@@ -6,6 +6,8 @@ All notable changes to this card are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-20
+
 ### Added
 
 - First version: a year of any sensor with long-term statistics as a grid with one square per day, in four steps of one color, with the daily average, the days that reached the highest threshold and the best day above it
@@ -18,4 +20,5 @@ All notable changes to this card are documented here. The format follows
 - Visual editor in the card picker, built on Home Assistant's own form
 - English, Arabic, Chinese, Dutch, French, German, Hindi, Italian, Japanese, Portuguese and Spanish, following the Home Assistant profile
 
-[Unreleased]: https://github.com/owen282000/life-dashboard-year-card/commits/main
+[Unreleased]: https://github.com/owen282000/life-dashboard-year-card/compare/0.1.0...HEAD
+[0.1.0]: https://github.com/owen282000/life-dashboard-year-card/releases/tag/0.1.0
