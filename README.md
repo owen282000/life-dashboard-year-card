@@ -170,7 +170,9 @@ The [Life Dashboard app](https://github.com/owen282000/life-dashboard-companion-
 - **Screen time starts when you install.** It is Android only, and a phone only hands over about the last week, so that grid fills in from the first sync on. An iPhone has no screen time for apps to read.
 - **Nothing to set up.** The card picker starts with the phone's steps, sleep, screen time and exercise, each with its name, color and thresholds.
 
-The app is listed on Google Play and the App Store as Health Data for Home Assistant: <a href="https://play.google.com/store/apps/details?id=com.owen282000.lifedashboard&referrer=utm_source%3Dgh-yearcard-readme%26utm_medium%3Dreadme">€4.99 (US$4.99) once on Google Play</a> and <a href="https://apps.apple.com/app/apple-store/id6824075761?pt=128699800&ct=gh-yearcard-readme&mt=8">€6.99 (US$5.99) once on the App Store</a>. The APK on [GitHub](https://github.com/owen282000/life-dashboard-companion-app) and F-Droid is free, and the [iPhone app](https://github.com/owen282000/life-dashboard-companion-app-ios) is free to build yourself.
+The app is listed on Google Play and the App Store as Health Data for Home Assistant: <a href="https://play.google.com/store/apps/details?id=com.owen282000.lifedashboard&referrer=utm_source%3Dgh-yearcard-readme%26utm_medium%3Dreadme">€4.99 (US$4.99) once on Google Play</a> and <a href="https://apps.apple.com/app/apple-store/id6824075761?pt=128699800&ct=gh-yearcard-readme&mt=8">€6.99 (US$5.99) once on the App Store</a>, with automatic updates and no subscription.
+
+Other ways to install: the Android APK is free [on GitHub](https://github.com/owen282000/life-dashboard-companion-app#install) and on F-Droid, and you can build the [iPhone app](https://github.com/owen282000/life-dashboard-companion-app-ios#build-it-yourself) yourself with an Apple Developer Program membership.
 
 To set it up, install the [Life Dashboard integration](https://github.com/owen282000/life-dashboard-ha) and add it in Home Assistant, scan its pairing code with the app, grant access to your health data, and tap **Sync Now** and then **Send history**. Its README has the steps.
 
